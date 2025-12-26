@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SuperShare • Debayan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="icon" type="image/svg+xml" href="
+data:image/svg+xml,
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+  <defs>
+    <linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+      <stop offset='0%' stop-color='%23a855f7'/>
+      <stop offset='100%' stop-color='%237c3aed'/>
+    </linearGradient>
+  </defs>
+  <rect x='5' y='5' width='90' height='90' rx='20' fill='url(%23g)'/>
+  <rect x='58' y='18' width='12' height='64' rx='4' fill='white'/>
+  <rect x='28' y='58' width='44' height='12' rx='4' fill='white'/>
+</svg>
+">
+
+<style>
+:root{
+  --glass: rgba(255,255,255,0.18);
+  --border: rgba(255,255,255,0.3);
+  --btn: linear-gradient(135deg,#a855f7,#7c3aed);
+}
+
+*{box-sizing:border-box;font-family:system-ui}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:linear-gradient(135deg,#2b1055,#4b1b7a,#7a2cff);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+}
+
+.card{
+  width:1100px;
+  min-height:650px;
+  background:linear-gradient(160deg,rgba(255,255,255,0.25),rgba(255,255,255,0.08));
+  backdrop-filter:blur(24px);
+  border-radius:30px;
+  padding:46px;
+  box-shadow:0 50px 140px rgba(0,0,0,0.5);
+}
+
+.hidden{display:none}
+
+/* LOGO */
+.logo{display:flex;align-items:center;gap:18px;margin-bottom:28px}
+.logo-mark{
+  width:58px;height:58px;border-radius:14px;
+  background:var(--btn);position:relative;
+}
+.logo-mark::before,.logo-mark::after{
+  content:"";position:absolute;background:white;border-radius:4px;
+}
+.logo-mark::before{width:10px;height:40px;left:34px;top:9px}
+.logo-mark::after{width:30px;height:10px;left:14px;top:34px}
+.logo-text{font-size:38px;font-weight:800}
+
+/* LOGIN */
+.login-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:50px;align-items:center;
+}
+
+.login-form input{
+  width:100%;padding:18px;margin-top:16px;
+  border-radius:16px;border:none;
+  background:rgba(0,0,0,0.35);
+  color:white;font-size:16px;
+}
+.login-form input::placeholder{color:#e9d5ff}
+.login-form button{
+  margin-top:24px;width:100%;padding:18px;
+  border-radius:16px;border:none;
+  background:var(--btn);color:white;
+  font-size:17px;font-weight:700;cursor:pointer;
+}
+
+/* HEADER */
+.header{
+  display:flex;align-items:center;gap:22px;margin-bottom:36px;
+}
+.header img{
+  width:76px;height:76px;border-radius:50%;
+  border:3px solid var(--border);
+}
+.header .name{font-size:28px;font-weight:700}
+.logout-btn{
+  margin-left:auto;padding:12px 22px;
+  border-radius:14px;border:1px solid var(--border);
+  background:rgba(0,0,0,0.35);
+  color:white;font-weight:600;cursor:pointer;
+}
+
+/* SHARE */
+.share-center{
+  display:flex;flex-direction:column;
+  align-items:center;gap:18px;margin-bottom:40px;
+}
+.share-center textarea{
+  width:70%;min-height:90px;resize:none;
+  padding:20px;border-radius:20px;border:none;
+  background:rgba(0,0,0,0.35);
+  color:white;font-size:17px;
+}
+.share-center textarea::placeholder{color:#e9d5ff}
+
+.share-actions{display:flex;gap:16px}
+.file-btn{
+  padding:14px 22px;border-radius:14px;
+  background:rgba(255,255,255,0.2);
+  cursor:pointer;font-weight:600;
+}
+.file-btn input{display:none}
+.share-actions button{
+  padding:14px 28px;border-radius:14px;
+  border:none;background:var(--btn);
+  color:white;font-size:16px;font-weight:700;
+}
+
+/* FEED */
+.feed{max-height:420px;overflow-y:auto}
+.item{
+  background:var(--glass);
+  padding:28px;border-radius:26px;margin-bottom:26px;
+}
+.item-header{
+  display:flex;align-items:center;gap:16px;margin-bottom:14px;
+}
+.item-header img{width:50px;height:50px;border-radius:50%}
+.delete-btn{
+  margin-left:auto;background:none;border:none;
+  color:#ffb4b4;cursor:pointer;
+}
+.preview img,video,audio{
+  max-width:100%;border-radius:20px;margin-top:12px;
+}
+.file-card{
+  margin-top:12px;padding:18px;
+  border-radius:18px;background:rgba(0,0,0,0.35);
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div class="card hidden" id="loginCard">
+  <div class="login-grid">
+    <div>
+      <div class="logo">
+        <div class="logo-mark"></div>
+        <div class="logo-text">SuperShare</div>
+      </div>
+      Share files up to <b>1TB</b>.
+    </div>
+    <div class="login-form">
+      <input id="username" placeholder="Enter username">
+      <input type="password" id="password" placeholder="Enter password">
+      <input type="file" id="avatar">
+      <button onclick="login()">Enter</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="card hidden" id="appCard">
+  <div class="header">
+    <img id="pImg">
+    <div class="name" id="pName"></div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <div class="share-center">
+    <textarea id="textShare" placeholder="Write something to share…"></textarea>
+    <div class="share-actions">
+      <label class="file-btn">Add File
+        <input type="file" id="fileShare">
+      </label>
+      <button onclick="share()">Share</button>
+    </div>
+  </div>
+
+  <div class="feed" id="feed"></div>
+</div>
+
+<script>
+const PASS="super00100101";
+
+let db = JSON.parse(localStorage.getItem("SuperShareDB")) || {};
+let currentUser = localStorage.getItem("SuperShareSession");
+
+function login(){
+  if(password.value!==PASS || !username.value || !avatar.files[0]) return;
+  const r=new FileReader();
+  r.onload=()=>{
+    db[username.value]=db[username.value]||{avatar:r.result,items:[]};
+    localStorage.setItem("SuperShareDB",JSON.stringify(db));
+    localStorage.setItem("SuperShareSession",username.value);
+    start(username.value);
+  };
+  r.readAsDataURL(avatar.files[0]);
+}
+
+function start(u){
+  currentUser=u;
+  loginCard.classList.add("hidden");
+  appCard.classList.remove("hidden");
+  pImg.src=db[u].avatar;
+  pName.textContent=u;
+  render();
+}
+
+function logout(){
+  localStorage.removeItem("SuperShareSession");
+  currentUser=null;
+  appCard.classList.add("hidden");
+  loginCard.classList.remove("hidden");
+}
+
+function share(){
+  const text=textShare.value.trim();
+  const file=fileShare.files[0];
+
+  if(text){
+    db[currentUser].items.unshift({
+      id:crypto.randomUUID(),
+      owner:currentUser,
+      type:"text",
+      content:text
+    });
+  }
+
+  if(file){
+    db[currentUser].items.unshift({
+      id:crypto.randomUUID(),
+      owner:currentUser,
+      type:file.type.startsWith("image")?"image":
+           file.type.startsWith("video")?"video":
+           file.type.startsWith("audio")?"audio":"file",
+      name:file.name,
+      size:file.size,
+      url:URL.createObjectURL(file)
+    });
+  }
+
+  localStorage.setItem("SuperShareDB",JSON.stringify(db));
+  textShare.value="";
+  fileShare.value="";
+  render();
+}
+
+function deleteItem(owner,id){
+  if(owner!==currentUser) return;
+  db[owner].items=db[owner].items.filter(i=>i.id!==id);
+  localStorage.setItem("SuperShareDB",JSON.stringify(db));
+  render();
+}
+
+function render(){
+  feed.innerHTML="";
+  Object.entries(db).forEach(([user,data])=>{
+    data.items.forEach(i=>{
+      const d=document.createElement("div");
+      d.className="item";
+      d.innerHTML=`
+        <div class="item-header">
+          <img src="${data.avatar}">
+          <b>${user}</b>
+          ${i.owner===currentUser?
+            `<button class="delete-btn" onclick="deleteItem('${user}','${i.id}')">Delete</button>`:""}
+        </div>
+      `;
+      if(i.type==="text") d.innerHTML+=`<div>${i.content}</div>`;
+      if(i.type==="image") d.innerHTML+=`<img src="${i.url}">`;
+      if(i.type==="video") d.innerHTML+=`<video controls src="${i.url}"></video>`;
+      if(i.type==="audio") d.innerHTML+=`<audio controls src="${i.url}"></audio>`;
+      if(i.type==="file") d.innerHTML+=`
+        <div class="file-card">${i.name} — ${(i.size/1024/1024).toFixed(2)} MB</div>`;
+      feed.appendChild(d);
+    });
+  });
+}
+
+/* AUTO LOGIN ON LOAD */
+if(currentUser && db[currentUser]){
+  start(currentUser);
+}else{
+  loginCard.classList.remove("hidden");
+}
+</script>
+
+</body>
+</html>
